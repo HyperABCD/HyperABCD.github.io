@@ -1,0 +1,118 @@
+<html>
+  <head>
+    <title>Hyper Github</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-image: linear-gradient(to bottom, #ff0000, #ffffff);
+      }
+      .header {
+        background-color: #100f11;
+        text-align: center;
+        padding: 20px;
+        padding-bottom: 10px; 
+      }
+      .header h1 {
+        font-size: 36px;
+        color: white;
+      }
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #100f11;
+        padding: 20px;
+        padding-left: 250px;
+        padding-right: 250px;
+      }
+      .nav a {
+        text-decoration: none;
+        color: white;
+        font-size: 18px;
+      }
+      .main {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .card {
+        width: 30%;
+        margin: 20px;
+        background-color: #00000085;
+        box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      .card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+      .card h2 {
+        font-size: 24px;
+        padding: 20px;
+      }
+      .card p {
+        font-size: 16px;
+        padding: 0 20px 20px 20px;
+      }
+      .footer {
+        background-color: #100f11;
+        text-align: center;
+        padding: 20px;
+        color: white;
+      }
+      a {
+        color: white;
+      }
+      a#monLien {
+        color: white;
+        font:  italic;
+        padding: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Hyper Github</h1>
+    </div>
+    <div class="nav">
+      <a href="404.html">Home</a>
+      <a href="404.html">Projects</a>
+      <a href="404.html">About Me</a>
+      <a href="404.html">Contact</a>
+    </div>
+    <div class="main">
+      <div class="card">
+        <img src="HyperABCD.github.io/Image/project1.png" alt="Project 1">
+        <h2>Ransomware</h2>
+        <p>Ransomware software that encrypts user's files and demands payment of a ransom to decrypt them. Includes my own symmetric encryption system.</p>
+        <a href="https://github.com/HyperABCD" id="monLien">Download</a>
+      </div>
+      <div class="card">
+        <img src="HyperABCD.github.io/Image/project2.png" alt="Project 2">
+        <h2>Web Site</h2>
+        <p>The site you are currently visiting is my base to learn HTML and CSS in my free time.</p>
+        <a href="https://github.com/HyperABCD" id="monLien">Download</a>
+      </div>
+      <div class="card">
+        <img src="HyperABCD.github.io/Image/project3.jpg" alt="Project 3">
+        <h2>Hypixel Auctions Sniper</h2>
+        <p>A "Hypixel Skyblock Auction Sniper" is a tool used to buy items at auction on the Minecraft Hypixel Skyblock server. It can be used to automatically bid on an item before the auction ends, maximizing the chances of getting it for less than its actual value. Use basic API and Python and have advanced skills.</p>
+        <a href="https://github.com/HyperABCD" id="monLien">Download</a>
+      </div>
+      <div class="card">
+        <img src="HyperABCD.github.io/Image/project4.png" alt="Project 4">
+        <h2>Discord Bot</h2>
+        <p>Bots for moderation controls, music player in the voice channel, and more for the popular social network Discord.</p>
+        <a href="https://github.com/HyperABCD" id="monLien">Download</a>
+      </div>
+    </div>
+    <div class="footer">
+      Copyright 2023
+    </div>
+  </body>  
+  <script>
+      function randomColor() {
+        return '#' + Math.floor(Math.random() * 16777215).toString(16);
+      }
+      document.body.style.backgroundImage = `linear-gradient(to bottom, ${randomColor()}, ${randomColor()})`;
+    </script>
+</html>
