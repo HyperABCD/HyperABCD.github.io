@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz informatique</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('background.webp');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+        }
+        #quiz {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 60px;
+            border-radius: 50px;
+            background: #e0e0e0;
+            max-width: 1000px;
+        }
+        .bouton {
+            margin: 12px;
+            font-family: "Sofia", sans-serif;
+            border-radius: 42px;
+            background:  #cacaca;
+            font-size: 18px;
+            padding: 10px 30px;
+            transition: background 0.5s;
+            border: none;
+            cursor: pointer;
+        }
+        .bouton:hover {
+            background: #0082c2;
+        }
+        #question {
+            font-size: 30px;
+            font-family: "Sofia", sans-serif;
+            text-align: center;
+            margin: 15px;
+        }
+        #choices {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        h1 {
+            font-family: "Sofia", sans-serif;
+            font-size: 40px;
+            margin: 0px;
+        }
+        #progressbar {
+            margin: 20px;
+            background: linear-gradient(90deg, rgba(139, 198, 75, 1) 0%, rgba(255, 255, 255, 1) 0%);
+            width: 75%;
+            height: 15px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="quiz">
+        <h1>Testez vos connaissances en informatique</h1>
+        <p id="question"></p>
+        <div id="choices">
+            <button class="bouton" onclick="checkAnswer(0)">1</button>
+            <button class="bouton" onclick="checkAnswer(1)">2</button>
+            <button class="bouton" onclick="checkAnswer(2)">3</button>
+            <button class="bouton" onclick="checkAnswer(3)">4</button>
+        </div>
+        <div id="progressbar"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "1. Qu'est-ce qu'un système d'exploitation ?",
+                choices: ["Un type de logiciel de traitement de texte", "Un composant matériel d'un ordinateur", "Un logiciel qui gère les ressources d'un ordinateur", "Une imprimante laser"],
+                correctAnswer: "Un logiciel qui gère les ressources d'un ordinateur"
+            },
+            {
+                question: "2. Quelle est la principale fonction d'un pare-feu (firewall) ?",
+                choices: ["Créer des copies de sauvegarde des fichiers", "Bloquer les logiciels malveillants", "Améliorer la vitesse d'Internet", "Gérer les fichiers du système"],
+                correctAnswer: "Bloquer les logiciels malveillants"
+            },
+            {
+                question: "3. Quel langage de programmation est principalement utilisé pour le développement web côté serveur ?",
+                choices: ["HTML", "CSS", "JavaScript", "PHP"],
+                correctAnswer: "PHP"
+            },
+            {
+                question: "4. Quelle est la signification de l'acronyme URL ?",
+                choices: ["Uniform Resource Locator", "User Requirements Language", "Universal Record Locator", "Unique Resource Link"],
+                correctAnswer: "Uniform Resource Locator"
+            },
+            {
+                question: "5. Quel est le rôle d'un navigateur web ?",
+                choices: ["Jouer des vidéos en streaming", "Écrire du code source", "Naviguer sur Internet et afficher des pages web", "Éditer des images"],
+                correctAnswer: "Naviguer sur Internet et afficher des pages web"
+            },
+            {
+                question: "6. Quelle est la fonction principale d'un processeur (CPU) dans un ordinateur ?",
+                choices: ["Afficher des images à l'écran", "Stocker des données à long terme", "Effectuer des calculs et des traitements de données", "Gérer les connexions Internet"],
+                correctAnswer: "Effectuer des calculs et des traitements de données"
+            },
+            {
+                question: "7. Qu'est-ce qu'un langage de programmation orienté objet ?",
+                choices: ["Un langage de programmation utilisé exclusivement pour la création d'objets physiques", "Un langage de programmation qui se concentre sur la sécurité des données", "Un langage de programmation qui permet de créer des objets virtuels avec des propriétés et des méthodes", "Un langage de programmation destiné uniquement aux jeux vidéo"],
+                correctAnswer: "Un langage de programmation qui permet de créer des objets virtuels avec des propriétés et des méthodes"
+            },
+            {
+                question: "8. Qu'est-ce qu'un réseau local (LAN) ?",
+                choices: ["Un réseau qui couvre une grande région géographique, voire plusieurs pays", "Un réseau qui relie des ordinateurs dans une seule pièce", "Un réseau utilisé uniquement pour les appels téléphoniques", "Un réseau destiné aux communications spatiales"],
+                correctAnswer: "Un réseau qui relie des ordinateurs dans une seule pièce"
+            },
+            {
+                question: "9. Quelle est la différence entre le stockage SSD et le stockage HDD ?",
+                choices: ["Le stockage SSD est plus lent mais moins cher que le stockage HDD", "Le stockage SSD est plus rapide et plus silencieux que le stockage HDD", "Le stockage SSD utilise des disques magnétiques, tandis que le stockage HDD utilise des puces électroniques", "Le stockage SSD est principalement utilisé pour le stockage à long terme, tandis que le stockage HDD est utilisé pour la mémoire vive"],
+                correctAnswer: "Le stockage SSD est plus rapide et plus silencieux que le stockage HDD"
+            },
+            {
+                question: "10. Quelle est la principale fonction d'un système de gestion de base de données (SGBD) ?",
+                choices: ["Jouer à des jeux vidéo en ligne", "Gérer les fichiers du système d'exploitation", "Stocker, organiser et manipuler des données de manière efficace", "Analyser les performances du processeur (CPU)"],
+                correctAnswer: "Stocker, organiser et manipuler des données de manière efficace"
+            },
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        const questionElement = document.getElementById('question');
+        const choiceButtons = document.querySelectorAll('.bouton');
+        const progressbar = document.getElementById('progressbar');
+        let pourcentage1 = 0;
+        let pourcentage2 = 0;
+
+        function loadQuestion() {
+            const q = questions[currentQuestion];
+            questionElement.textContent = q.question;
+            q.choices.forEach((choice, index) => {
+                choiceButtons[index].textContent = choice;
+                choiceButtons[index].style.backgroundColor = '#cacaca'; // Réinitialiser la couleur de fond
+            });
+        }
+
+        function checkAnswer(choiceIndex) {
+            const selectedChoice = questions[currentQuestion].choices[choiceIndex];
+            const correctAnswer = questions[currentQuestion].correctAnswer;
+
+            if (selectedChoice === correctAnswer) {
+                console.log('Correct');
+                choiceButtons[choiceIndex].style.backgroundColor = '#8bc64b';
+                score++;
+            } else {
+                console.log('Incorrect');
+                choiceButtons[choiceIndex].style.backgroundColor = '#ef292d';
+            }
+
+            setTimeout(function () {
+                currentQuestion++;
+
+                if (currentQuestion < questions.length) {
+                    loadQuestion();
+                    pourcentage1 += 10;
+                    pourcentage2 += 10;
+                    progressbar.style.background = `linear-gradient(90deg, rgba(139, 198, 75, 1) ${pourcentage1}%, rgba(255, 255, 255, 1) ${pourcentage2}%)`;
+                } else {
+                    pourcentage1 += 10;
+                    pourcentage2 += 10;
+                    progressbar.style.background = `linear-gradient(90deg, rgba(139, 198, 75, 1) ${pourcentage1}%, rgba(255, 255, 255, 1) ${pourcentage2}%)`;
+                    console.log(`Score final : ${score}/${questions.length}`);
+                    showResult();
+                }
+            }, 500);
+        }
+
+        function showResult() {
+            const quizElement = document.getElementById("choices");
+            quizElement.style.display = 'none';
+            questionElement.innerHTML = `Bravo ! <br> Score final : ${score}/${questions.length}`;
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
