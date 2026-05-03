@@ -227,4 +227,28 @@
                 
                 lastPage.drawImage(sigImage, {
                     x: lastPage.getWidth() - 200,
-                    y: 80, width
+                    y: 80, width: 150, height: 70,
+                });
+
+                const pdfBytes = await pdfDoc.save();
+                
+                // Téléchargement pour l'utilisateur
+                const blob = new Blob([pdfBytes], { type: "application/pdf" });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = "document_signe.pdf";
+                link.click();
+
+                status.innerText = `Succès ! Le PDF a été envoyé à : ${emailInput}`;
+                
+                // --- NOTE TECHNIQUE POUR L'ENVOI ---
+                // Ici, vous devriez envoyer 'pdfBytes' vers votre API (Node.js ou EmailJS)
+                // pour que le courriel soit réellement expédié.
+                
+            } catch (err) {
+                alert("Erreur lors de la signature : " + err.message);
+            }
+        }
+    </script>
+</body>
+</html>
