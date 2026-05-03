@@ -3,165 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signature et Certification de Document</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <title>Signature | Contrat Location Chalet</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-hover: #4338ca;
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --text: #1e293b;
-            --border: #e2e8f0;
+            --primary: #4f46e5; --primary-hover: #4338ca; --bg: #f1f5f9;
+            --card: #ffffff; --text: #1e293b; --text-muted: #64748b; --border: #e2e8f0;
         }
-
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: var(--bg); 
-            color: var(--text);
-            margin: 0; padding: 20px;
-            display: flex; flex-direction: column; align-items: center;
-        }
-
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { margin: 0; color: #0f172a; font-size: 1.8rem; }
-
-        .main-container {
-            display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 24px;
-            width: 100%;
-            max-width: 1200px;
-        }
-
-        /* Visualiseur PDF */
-        #pdf-container { 
-            background: #cbd5e1; 
-            height: 85vh; 
-            overflow-y: auto; 
-            border-radius: 12px;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
-            padding: 20px;
-        }
-        canvas { 
-            display: block; margin: 0 auto 20px auto; 
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-            background: white;
-        }
-
-        /* Panneau Latéral */
-        .side-panel {
-            background: var(--card);
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            height: fit-content;
-            position: sticky; top: 20px;
-        }
-
-        .input-group { margin-bottom: 20px; }
-        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: #475569; }
-        
-        input[type="email"] {
-            width: 100%; padding: 12px; border: 1px solid var(--border);
-            border-radius: 8px; box-sizing: border-box; font-size: 0.9rem;
-        }
-
-        #signature-pad { 
-            border: 2px solid var(--border); border-radius: 8px; 
-            background: #fff; cursor: crosshair; touch-action: none;
-            width: 100%; margin-bottom: 15px;
-        }
-
-        .checkbox-group {
-            display: flex; gap: 10px; align-items: flex-start;
-            margin-bottom: 20px; font-size: 0.85rem; line-height: 1.4;
-        }
-        .checkbox-group input { margin-top: 3px; }
-
-        .actions { display: flex; flex-direction: column; gap: 10px; }
-        
-        button { 
-            padding: 14px; border: none; border-radius: 8px; 
-            font-weight: 600; cursor: pointer; transition: 0.2s;
-        }
-
-        .btn-primary { background: var(--primary); color: white; width: 100%; }
-        .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
-        .btn-primary:disabled { background: #cbd5e1; cursor: not-allowed; }
-        .btn-secondary { background: #f1f5f9; color: #475569; font-size: 0.8rem; }
-
-        #status { font-size: 0.8rem; margin-top: 15px; text-align: center; color: #6366f1; }
-
-        @media (max-width: 950px) {
-            .main-container { grid-template-columns: 1fr; }
-            .side-panel { position: static; }
-        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); color: var(--text); margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .header { text-align: center; margin-bottom: 2rem; }
+        .main-container { display: grid; grid-template-columns: 1fr 380px; gap: 30px; width: 100%; max-width: 1100px; }
+        #pdf-container { background: #cbd5e1; height: 80vh; overflow-y: auto; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        canvas { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); background: white; border-radius: 4px; max-width: 100%; }
+        .side-panel { background: var(--card); padding: 30px; border-radius: 16px; height: fit-content; border: 1px solid var(--border); position: sticky; top: 20px; }
+        .input-group { margin-bottom: 24px; }
+        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; }
+        input[type="email"] { width: 100%; padding: 12px; border: 1.5px solid var(--border); border-radius: 10px; box-sizing: border-box; }
+        #signature-pad { border: 2px dashed var(--border); border-radius: 12px; background: #fcfcfc; cursor: crosshair; width: 100%; height: 150px; display: block; }
+        .btn-primary { background: var(--primary); color: white; width: 100%; padding: 14px; border: none; border-radius: 10px; cursor: pointer; }
+        .btn-primary:disabled { background: #cbd5e1; }
+        #status { font-size: 0.85rem; margin-top: 15px; text-align: center; color: var(--primary); }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>Signature du Document</h1>
+        <h1>Contrat de location</h1>
+        <p>Veuillez lire et signer le document ci-contre.</p>
     </div>
 
     <div class="main-container">
         <div id="pdf-container">
-            <p style="text-align: center; color: #475569; margin-top: 50px;">Chargement du document...</p>
+            <p>Chargement du contrat...</p>
         </div>
 
         <div class="side-panel">
-            <div class="input-group">
-                <label for="user-email">Recevoir une copie par courriel</label>
-                <input type="email" id="user-email" placeholder="votre@exemple.com">
-            </div>
-
-            <label>Signez ci-dessous</label>
-            <canvas id="signature-pad" width="330" height="150"></canvas>
-            <button class="btn-secondary" onclick="clearSignature()">Effacer le tracé</button>
-
-            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-
             <div class="checkbox-group">
                 <input type="checkbox" id="attest-check" onchange="toggleButton()">
-                <label for="attest-check">
-                    J'atteste avoir pris connaissance du document et certifie que les informations sont exactes.
-                </label>
+                <label for="attest-check">J'accepte les termes du contrat.</label>
             </div>
-
+            <div class="input-group">
+                <label for="user-email">Votre adresse courriel</label>
+                <input type="email" id="user-email" placeholder="nom@exemple.com">
+            </div>
+            <label>Votre signature</label>
+            <canvas id="signature-pad"></canvas>
+            <button class="btn-secondary" style="margin-top:10px" onclick="clearSignature()">Effacer</button>
             <div class="actions">
-                <button class="btn-primary" id="btn-submit" onclick="processPDF()" disabled>
-                    Signer et Envoyer
-                </button>
+                <button class="btn-primary" id="btn-submit" onclick="processPDF()" disabled>Signer et terminer</button>
             </div>
             <p id="status"></p>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-
     <script>
+        // 1. Initialisation EmailJS
+        (function(){
+            emailjs.init("xbWfD_ssoTa1lWfh-"); // <-- REMPLACEZ PAR VOTRE CLÉ PUBLIQUE
+        })();
+
+        // 2. Configuration PDF.js
         const pdfjsLib = window['pdfjs-dist/build/pdf'];
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-        // NOM DU FICHIER PDF (doit être dans le même dossier)
-        const PDF_URL = 'mon_document.pdf'; 
-
+        const PDF_URL = 'contrat.pdf'; 
         let originalBytes = null;
         const pdfContainer = document.getElementById('pdf-container');
+        const sigCanvas = document.getElementById('signature-pad');
+        const sigCtx = sigCanvas.getContext('2d');
+        let drawing = false;
 
-        // Chargement initial
+        // Fonction utilitaire pour convertir le PDF en Base64 pour EmailJS
+        function arrayBufferToBase64(buffer) {
+            let binary = '';
+            const bytes = new Uint8Array(buffer);
+            for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i]);
+            return window.btoa(binary);
+        }
+
         window.addEventListener('DOMContentLoaded', async () => {
             try {
                 const response = await fetch(PDF_URL);
                 if (!response.ok) throw new Error("PDF introuvable.");
                 originalBytes = await response.arrayBuffer();
                 loadPdf(originalBytes);
-            } catch (err) {
-                pdfContainer.innerHTML = `<p style="color:red; text-align:center;">Erreur: ${err.message}</p>`;
-            }
+            } catch (err) { pdfContainer.innerHTML = `<p style="color:red;">Erreur: ${err.message}</p>`; }
         });
 
         async function loadPdf(bytes) {
@@ -177,11 +108,7 @@
             }
         }
 
-        // --- GESTION SIGNATURE ---
-        const sigCanvas = document.getElementById('signature-pad');
-        const sigCtx = sigCanvas.getContext('2d');
-        let drawing = false;
-
+        // Gestion signature
         const getPos = (e) => {
             const rect = sigCanvas.getBoundingClientRect();
             const cx = e.clientX || e.touches?.[0].clientX;
@@ -199,54 +126,40 @@
         sigCanvas.addEventListener('touchmove', (e) => { move(e); e.preventDefault(); });
 
         function clearSignature() { sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height); }
+        function toggleButton() { document.getElementById('btn-submit').disabled = !document.getElementById('attest-check').checked; }
 
-        // --- LOGIQUE BOUTON ---
-        function toggleButton() {
-            const isChecked = document.getElementById('attest-check').checked;
-            document.getElementById('btn-submit').disabled = !isChecked;
-        }
-
-        // --- GÉNÉRATION ---
         async function processPDF() {
             const emailInput = document.getElementById('user-email').value;
             const status = document.getElementById('status');
-            
-            if (!emailInput.includes('@')) {
-                alert("Veuillez entrer une adresse courriel valide.");
-                return;
-            }
-
-            status.innerText = "Traitement du PDF...";
+            if (!emailInput.includes('@')) { alert("Courriel invalide"); return; }
+            status.innerText = "Traitement et envoi...";
             
             try {
                 const pdfDoc = await PDFLib.PDFDocument.load(originalBytes.slice(0));
                 const pages = pdfDoc.getPages();
                 const lastPage = pages[pages.length - 1];
-
                 const sigImage = await pdfDoc.embedPng(sigCanvas.toDataURL('image/png'));
                 
-                lastPage.drawImage(sigImage, {
-                    x: lastPage.getWidth() - 200,
-                    y: 80, width: 150, height: 70,
-                });
-
+                lastPage.drawImage(sigImage, { x: lastPage.getWidth() - 200, y: 80, width: 150, height: 70 });
                 const pdfBytes = await pdfDoc.save();
                 
-                // Téléchargement pour l'utilisateur
+                // Envoi EmailJS
+                await emailjs.send("service_5ejrxoo", "service_5ejrxoo", {
+                    user_email: emailInput,
+                    pdf_base64: arrayBufferToBase64(pdfBytes) 
+                });
+
+                // Téléchargement local
                 const blob = new Blob([pdfBytes], { type: "application/pdf" });
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
-                link.download = "document_signe.pdf";
+                link.download = "contrat_signe.pdf";
                 link.click();
 
-                status.innerText = `Succès ! Le PDF a été envoyé à : ${emailInput}`;
-                
-                // --- NOTE TECHNIQUE POUR L'ENVOI ---
-                // Ici, vous devriez envoyer 'pdfBytes' vers votre API (Node.js ou EmailJS)
-                // pour que le courriel soit réellement expédié.
-                
+                status.innerText = "Succès ! Le contrat a été envoyé par mail.";
             } catch (err) {
-                alert("Erreur lors de la signature : " + err.message);
+                console.error(err);
+                status.innerText = "Erreur : " + err.message;
             }
         }
     </script>
