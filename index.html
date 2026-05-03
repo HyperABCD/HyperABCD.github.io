@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Signature de Document</title>
+    <title>Signature et Certification de Document</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
@@ -13,6 +13,7 @@
             --bg: #f8fafc;
             --card: #ffffff;
             --text: #1e293b;
+            --border: #e2e8f0;
         }
 
         body { 
@@ -25,21 +26,19 @@
 
         .header { text-align: center; margin-bottom: 30px; }
         .header h1 { margin: 0; color: #0f172a; font-size: 1.8rem; }
-        .header p { color: #64748b; margin-top: 5px; }
 
-        /* Conteneur principal en deux colonnes sur grand écran */
         .main-container {
             display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 20px;
+            grid-template-columns: 1fr 380px;
+            gap: 24px;
             width: 100%;
             max-width: 1200px;
         }
 
-        /* Zone PDF */
+        /* Visualiseur PDF */
         #pdf-container { 
             background: #cbd5e1; 
-            height: 80vh; 
+            height: 85vh; 
             overflow-y: auto; 
             border-radius: 12px;
             box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
@@ -48,48 +47,54 @@
         canvas { 
             display: block; margin: 0 auto 20px auto; 
             box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
-            background: white; border-radius: 4px;
+            background: white;
         }
 
-        /* Panneau de Signature */
+        /* Panneau Latéral */
         .side-panel {
             background: var(--card);
             padding: 24px;
             border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             height: fit-content;
             position: sticky; top: 20px;
         }
 
-        h3 { margin-top: 0; font-size: 1.1rem; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: #475569; }
+        
+        input[type="email"] {
+            width: 100%; padding: 12px; border: 1px solid var(--border);
+            border-radius: 8px; box-sizing: border-box; font-size: 0.9rem;
+        }
 
         #signature-pad { 
-            border: 2px solid #e2e8f0; 
-            border-radius: 8px; 
-            background: #fff; 
-            cursor: crosshair; 
-            touch-action: none;
-            width: 100%; height: auto;
+            border: 2px solid var(--border); border-radius: 8px; 
+            background: #fff; cursor: crosshair; touch-action: none;
+            width: 100%; margin-bottom: 15px;
         }
 
-        .actions { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .checkbox-group {
+            display: flex; gap: 10px; align-items: flex-start;
+            margin-bottom: 20px; font-size: 0.85rem; line-height: 1.4;
+        }
+        .checkbox-group input { margin-top: 3px; }
 
+        .actions { display: flex; flex-direction: column; gap: 10px; }
+        
         button { 
-            padding: 12px; border: none; border-radius: 8px; 
-            font-weight: 600; cursor: pointer; transition: all 0.2s;
-            font-size: 0.95rem;
+            padding: 14px; border: none; border-radius: 8px; 
+            font-weight: 600; cursor: pointer; transition: 0.2s;
         }
 
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
-        .btn-primary:disabled { background: #94a3b8; cursor: not-allowed; }
+        .btn-primary { background: var(--primary); color: white; width: 100%; }
+        .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
+        .btn-primary:disabled { background: #cbd5e1; cursor: not-allowed; }
+        .btn-secondary { background: #f1f5f9; color: #475569; font-size: 0.8rem; }
 
-        .btn-secondary { background: #f1f5f9; color: #475569; }
-        .btn-secondary:hover { background: #e2e8f0; }
+        #status { font-size: 0.8rem; margin-top: 15px; text-align: center; color: #6366f1; }
 
-        #status { font-size: 0.85rem; margin-top: 10px; text-align: center; color: var(--primary); }
-
-        @media (max-width: 900px) {
+        @media (max-width: 950px) {
             .main-container { grid-template-columns: 1fr; }
             .side-panel { position: static; }
         }
@@ -98,22 +103,37 @@
 <body>
 
     <div class="header">
-        <h1>Validation de Document</h1>
-        <p>Veuillez relire le document et apposer votre signature ci-dessous.</p>
+        <h1>Signature du Document</h1>
     </div>
 
     <div class="main-container">
         <div id="pdf-container">
-            <p style="text-align: center; color: #475569;">Chargement du document sécurisé...</p>
+            <p style="text-align: center; color: #475569; margin-top: 50px;">Chargement du document...</p>
         </div>
 
         <div class="side-panel">
-            <h3>Votre Signature</h3>
-            <canvas id="signature-pad" width="300" height="180"></canvas>
-            
+            <div class="input-group">
+                <label for="user-email">Recevoir une copie par courriel</label>
+                <input type="email" id="user-email" placeholder="votre@exemple.com">
+            </div>
+
+            <label>Signez ci-dessous</label>
+            <canvas id="signature-pad" width="330" height="150"></canvas>
+            <button class="btn-secondary" onclick="clearSignature()">Effacer le tracé</button>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="attest-check" onchange="toggleButton()">
+                <label for="attest-check">
+                    J'atteste avoir pris connaissance du document et certifie que les informations sont exactes.
+                </label>
+            </div>
+
             <div class="actions">
-                <button class="btn-secondary" onclick="clearSignature()">Effacer le tracé</button>
-                <button class="btn-primary" id="btn-save" onclick="processPDF()">Valider et Envoyer</button>
+                <button class="btn-primary" id="btn-submit" onclick="processPDF()" disabled>
+                    Signer et Envoyer
+                </button>
             </div>
             <p id="status"></p>
         </div>
@@ -126,107 +146,85 @@
         const pdfjsLib = window['pdfjs-dist/build/pdf'];
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-        // CONFIGURATION : Le nom de ton fichier PDF ici
+        // NOM DU FICHIER PDF (doit être dans le même dossier)
         const PDF_URL = 'mon_document.pdf'; 
 
         let originalBytes = null;
         const pdfContainer = document.getElementById('pdf-container');
 
-        // --- CHARGEMENT AUTOMATIQUE DU PDF ---
+        // Chargement initial
         window.addEventListener('DOMContentLoaded', async () => {
             try {
                 const response = await fetch(PDF_URL);
-                if (!response.ok) throw new Error("Fichier PDF non trouvé à la racine.");
-                
+                if (!response.ok) throw new Error("PDF introuvable.");
                 originalBytes = await response.arrayBuffer();
-                loadPdfPreview(originalBytes);
+                loadPdf(originalBytes);
             } catch (err) {
-                pdfContainer.innerHTML = `<p style="color:red; text-align:center;">Erreur : ${err.message}<br>Assurez-vous que '${PDF_URL}' est présent dans le dossier.</p>`;
+                pdfContainer.innerHTML = `<p style="color:red; text-align:center;">Erreur: ${err.message}</p>`;
             }
         });
 
-        async function loadPdfPreview(bytes) {
-            const loadingTask = pdfjsLib.getDocument({data: bytes.slice(0)});
-            const pdf = await loadingTask.promise;
+        async function loadPdf(bytes) {
+            const pdf = await pdfjsLib.getDocument({data: bytes.slice(0)}).promise;
             pdfContainer.innerHTML = '';
-            
             for (let i = 1; i <= pdf.numPages; i++) {
                 const page = await pdf.getPage(i);
                 const canvas = document.createElement('canvas');
-                const context = canvas.getContext('2d');
                 const viewport = page.getViewport({scale: 1.2});
                 canvas.height = viewport.height; canvas.width = viewport.width;
                 pdfContainer.appendChild(canvas);
-                await page.render({canvasContext: context, viewport: viewport}).promise;
+                await page.render({canvasContext: canvas.getContext('2d'), viewport}).promise;
             }
         }
 
-        // --- LOGIQUE DE SIGNATURE ---
+        // --- GESTION SIGNATURE ---
         const sigCanvas = document.getElementById('signature-pad');
         const sigCtx = sigCanvas.getContext('2d');
         let drawing = false;
 
-        const getXY = (e) => {
+        const getPos = (e) => {
             const rect = sigCanvas.getBoundingClientRect();
-            const clientX = e.clientX || e.touches?.[0].clientX;
-            const clientY = e.clientY || e.touches?.[0].clientY;
-            return { x: clientX - rect.left, y: clientY - rect.top };
-        }
+            const cx = e.clientX || e.touches?.[0].clientX;
+            const cy = e.clientY || e.touches?.[0].clientY;
+            return { x: cx - rect.left, y: cy - rect.top };
+        };
 
-        const start = (e) => { drawing = true; sigCtx.beginPath(); const p = getXY(e); sigCtx.moveTo(p.x, p.y); };
-        const move = (e) => { if(!drawing) return; const p = getXY(e); sigCtx.lineTo(p.x, p.y); sigCtx.stroke(); };
-        const end = () => drawing = false;
-
+        const start = (e) => { drawing = true; sigCtx.beginPath(); const p = getPos(e); sigCtx.moveTo(p.x, p.y); };
+        const move = (e) => { if(!drawing) return; const p = getPos(e); sigCtx.lineTo(p.x, p.y); sigCtx.stroke(); };
+        
         sigCanvas.addEventListener('mousedown', start);
-        window.addEventListener('mouseup', end);
+        window.addEventListener('mouseup', () => drawing = false);
         sigCanvas.addEventListener('mousemove', move);
         sigCanvas.addEventListener('touchstart', (e) => { start(e); e.preventDefault(); });
         sigCanvas.addEventListener('touchmove', (e) => { move(e); e.preventDefault(); });
 
         function clearSignature() { sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height); }
 
-        // --- GÉNÉRATION ET TÉLÉCHARGEMENT ---
+        // --- LOGIQUE BOUTON ---
+        function toggleButton() {
+            const isChecked = document.getElementById('attest-check').checked;
+            document.getElementById('btn-submit').disabled = !isChecked;
+        }
+
+        // --- GÉNÉRATION ---
         async function processPDF() {
-            if (!originalBytes) return;
-            const btn = document.getElementById('btn-save');
+            const emailInput = document.getElementById('user-email').value;
             const status = document.getElementById('status');
             
-            btn.disabled = true;
-            status.innerText = "Génération du document...";
+            if (!emailInput.includes('@')) {
+                alert("Veuillez entrer une adresse courriel valide.");
+                return;
+            }
 
+            status.innerText = "Traitement du PDF...";
+            
             try {
-                const pdfDocLib = await PDFLib.PDFDocument.load(originalBytes.slice(0));
-                const pages = pdfDocLib.getPages();
+                const pdfDoc = await PDFLib.PDFDocument.load(originalBytes.slice(0));
+                const pages = pdfDoc.getPages();
                 const lastPage = pages[pages.length - 1];
 
-                const sigBase64 = sigCanvas.toDataURL('image/png');
-                const sigImage = await pdfDocLib.embedPng(sigBase64);
-
-                // Placement de la signature
+                const sigImage = await pdfDoc.embedPng(sigCanvas.toDataURL('image/png'));
+                
                 lastPage.drawImage(sigImage, {
                     x: lastPage.getWidth() - 200,
-                    y: 70,
-                    width: 150,
-                    height: 80,
-                });
-
-                const pdfBytes = await pdfDocLib.save();
-                const blob = new Blob([pdfBytes], { type: "application/pdf" });
-                const url = URL.createObjectURL(blob);
-                
-                // Téléchargement
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = "document_valide.pdf";
-                link.click();
-
-                status.innerText = "Terminé ! PDF téléchargé.";
-            } catch (err) {
-                alert("Erreur: " + err.message);
-            } finally {
-                btn.disabled = false;
-            }
-        }
-    </script>
-</body>
-</html>
+                    y: 80, width
