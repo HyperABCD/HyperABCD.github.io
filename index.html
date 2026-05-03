@@ -144,7 +144,7 @@
                 const pdfBytes = await pdfDoc.save();
                 
                 // Envoi EmailJS
-                await emailjs.send("service_5ejrxoo", "service_5ejrxoo", {
+                await emailjs.send("service_5ejrxoo", "template_qv47osr", {
                     user_email: emailInput,
                     pdf_base64: arrayBufferToBase64(pdfBytes) 
                 });
